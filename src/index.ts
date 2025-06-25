@@ -76,6 +76,23 @@ export class PetStoreMCP extends McpAgent {
         );
 
         this.server.tool(
+            "findPetsByTags",
+            { tags: z.array(z.string()).optional() },
+            async ({ tags }) => {
+                try {
+                    const response = await fetch(`${this.baseUrl}/pet/findByTags?tags=${tags?.join(',')}`, {
+                        method: "GET",
+                    });
+                    if (!response.ok) throw new Error(`Hiba a keresés során: ${response.status}`);
+                    const data = await response.json();
+                    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+                } catch (error) {
+                    return { content: [{ type: "text", text: `Hiba: ${error instanceof Error ? error.message : String(error)}` }] };
+                }
+            }
+        );
+
+        this.server.tool(
             "getPetById",
             { petId: z.number().int() },
             async ({ petId }) => {
