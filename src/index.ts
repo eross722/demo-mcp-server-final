@@ -114,6 +114,29 @@ export class MyMCP extends McpAgent {
             }
         );
 
+        // Tool for finding pets by tags
+        this.server.tool(
+            "findPetsByTags",
+            {
+                tags: z.array(z.string()).optional().describe("Tags to filter by"),
+            },
+            async ({ tags }) => {
+                try {
+                    const response = await fetch(`${this.baseUrl}/pet/findByTags?tags=${tags.join(',')}`);
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message);
+                    return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+                } catch (error) {
+                    return {
+                        content: [{
+                            type: "text",
+                            text: `Error: ${error instanceof Error ? error.message : String(error)}`,
+                        }],
+                    };
+                }
+            }
+        );
+
         // Tool for getting pet by ID
         this.server.tool(
             "getPetById",
