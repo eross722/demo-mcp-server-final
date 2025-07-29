@@ -10,7 +10,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.TOKEN }}  # ← Token hozzáadása
+          token: ${{ secrets.TOKEN }}
       - name: Set commit author details
         run: |
           git config --global user.name "${{ secrets.GIT_NAME }}"
